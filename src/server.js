@@ -188,6 +188,14 @@ async function startGateway() {
 
   console.log(`[gateway] ========== TOKEN SYNC COMPLETE ==========`);
 
+  // Trust the wrapper proxy so it can forward auth headers to the gateway
+  // Without this, the gateway ignores Authorization headers from "untrusted" proxies
+  await runCmd(
+    OPENCLAW_NODE,
+    clawArgs(["config", "set", "--json", "gateway.trustedProxies", '["127.0.0.1"]']),
+  );
+  console.log(`[gateway] Set gateway.trustedProxies to ["127.0.0.1"]`);
+
   const args = [
     "gateway",
     "run",
@@ -648,6 +656,14 @@ app.post("/setup/api/run", requireSetupAuth, async (req, res) => {
         OPENCLAW_NODE,
         clawArgs(["config", "set", "gateway.controlUi.allowInsecureAuth", "true"]),
       );
+
+      // Trust the wrapper proxy so it can forward auth headers to the gateway
+      // Without this, the gateway ignores Authorization headers from "untrusted" proxies
+      await runCmd(
+        OPENCLAW_NODE,
+        clawArgs(["config", "set", "--json", "gateway.trustedProxies", '["127.0.0.1"]']),
+      );
+      console.log(`[onboard] Set gateway.trustedProxies to ["127.0.0.1"]`);
 
       const channelsHelp = await runCmd(
         OPENCLAW_NODE,
