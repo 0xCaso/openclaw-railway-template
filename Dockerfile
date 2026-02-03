@@ -80,6 +80,9 @@ RUN pnpm install --prod --frozen-lockfile && pnpm store prune
 # Copy built openclaw
 COPY --from=openclaw-build /openclaw /openclaw
 
+# Fix Control UI path resolution for bundled gateway
+RUN ln -s /openclaw/dist/control-ui /openclaw/control-ui
+
 # Provide a openclaw executable
 RUN printf '%s\n' '#!/usr/bin/env bash' 'exec node /openclaw/dist/entry.js "$@"' > /usr/local/bin/openclaw \
   && chmod +x /usr/local/bin/openclaw
