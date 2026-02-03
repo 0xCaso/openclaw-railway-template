@@ -196,6 +196,14 @@ async function startGateway() {
   );
   console.log(`[gateway] Set gateway.trustedProxies to ["127.0.0.1"]`);
 
+  // Set the Control UI base path so links and routing work correctly
+  // Without this, the UI injects an empty base path and navigation breaks
+  await runCmd(
+    OPENCLAW_NODE,
+    clawArgs(["config", "set", "gateway.controlUi.basePath", "/openclaw"]),
+  );
+  console.log(`[gateway] Set gateway.controlUi.basePath to "/openclaw"`);
+
   const args = [
     "gateway",
     "run",
@@ -664,6 +672,14 @@ app.post("/setup/api/run", requireSetupAuth, async (req, res) => {
         clawArgs(["config", "set", "--json", "gateway.trustedProxies", '["127.0.0.1"]']),
       );
       console.log(`[onboard] Set gateway.trustedProxies to ["127.0.0.1"]`);
+
+      // Set the Control UI base path so links and routing work correctly
+      // Without this, the UI injects an empty base path and navigation breaks
+      await runCmd(
+        OPENCLAW_NODE,
+        clawArgs(["config", "set", "gateway.controlUi.basePath", "/openclaw"]),
+      );
+      console.log(`[onboard] Set gateway.controlUi.basePath to "/openclaw"`);
 
       const channelsHelp = await runCmd(
         OPENCLAW_NODE,
